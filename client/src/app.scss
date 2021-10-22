@@ -1,17 +1,38 @@
-.container {
+.main {
     display: flex;
-    flex-direction: column;
-    margin: auto;
-    width: 20%;
+    flex-grow: 1;
 
-    .buttons {
+    .container {
         display: flex;
-        justify-content: space-between;
-        margin-top: 1em;
-        * {
+        flex-direction: column;
+        margin: auto;
+        width: 40em;
+        align-items: center;
+
+        .error {
+            color: red;
+        }
+
+        .header {
+            margin-bottom: 6em;
+            color: rgba(128, 128, 128);
+        }
+
+        .view {
+            margin-bottom: 3em;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1em;
             width: 100%;
-            margin: 0 0.5em;
-            height: 3em;
+
+            * {
+                width: 100%;
+                margin: 0 0.5em;
+                height: 3em;
+            }
         }
     }
 }
