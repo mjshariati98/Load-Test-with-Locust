@@ -82,5 +82,5 @@ func main() {
 	router.POST("/go/sha256", fPost)
 	router.GET("/go/sha256", fGet)
 
-	router.Run(port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	router.Run(port)
 }
