@@ -4,11 +4,14 @@ const axios = Axios.create({
     baseURL: "/",
 });
 
-export async function shaRequest(sha: string, server: "go" | "node") {
+export async function shaRequest(shaInput: string, server: "go" | "node") {
     return (
         await axios({
             method: "GET",
-            url: `/${server}/sha256/${sha}`,
+            url: `/${server}/sha256`,
+            params: {
+                shaInput,
+            },
         })
     ).data as string;
 }

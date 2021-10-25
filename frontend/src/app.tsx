@@ -4,6 +4,7 @@ import "./app.scss";
 import { shaRequest, stringRequest } from "./tasks";
 
 export default function App() {
+    const [server, setServer] = useState<"go" | "node" | null>(null);
     const [stringInput, setStringInput] = useState({
         error: false,
         value: "",
@@ -40,8 +41,9 @@ export default function App() {
         if (shaInput.error) {
             return;
         }
+        setServer(server);
         try {
-            const res = await shaRequest(shaInput.value, "go");
+            const res = await shaRequest(shaInput.value, server);
             setStringView({
                 error: false,
                 value: res,
@@ -58,8 +60,9 @@ export default function App() {
         if (stringInput.error) {
             return;
         }
+        setServer(server);
         try {
-            const res = await stringRequest({ InputString: stringInput.value }, "go");
+            const res = await stringRequest({ InputString: stringInput.value }, server);
             setShaView({
                 error: false,
                 value: res,
@@ -77,14 +80,14 @@ export default function App() {
             <div className="container">
                 <h2 className="header">String to Sha256</h2>
                 {shaView.value && (
-                    <div className={`view ${shaView.error ? "error" : ""}`}>{shaView.value}</div>
+                    <div className={`view ${shaView.error ? "error" : "success"}`}>{`${server}: ${shaView.value}`}</div>
                 )}
                 <TextField
                     fullWidth
                     error={stringInput.error}
                     label="Enter String"
                     variant="outlined"
-                    helperText={stringInput.error && "String length shoud be more than 8 chars"}
+                    helperText={stringInput.error && "String length must be greater than 7."}
                     value={stringInput.value}
                     onChange={updateStringInputvalue}
                 />
@@ -100,8 +103,8 @@ export default function App() {
             <div className="container">
                 <h2 className="header">Sha256 to String</h2>
                 {stringView.value && (
-                    <div className={`view ${stringView.error ? "error" : ""}`}>
-                        {stringView.value}
+                    <div className={`view ${stringView.error ? "error" : "success"}`}>
+                        {`${server}: ${stringView.value}`}
                     </div>
                 )}
                 <TextField
