@@ -29,8 +29,17 @@ services:
     networks:
     - common-network
 
-#  nodejs-backend-1:
-#    image: nginx:1.17.10
+  nodejs-backend-1:
+    build: ./nodejs-backend
+    command: node /home/nodejs-backend/app.js 9090
+    networks:
+    - common-network
+
+  nodejs-backend-2:
+    build: ./nodejs-backend
+    command: node /home/nodejs-backend/app.js 9091
+    networks:
+    - common-network
   
   redis:
     image: redis:6.2.6-alpine
