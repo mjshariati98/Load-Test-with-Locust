@@ -26,7 +26,7 @@ services:
   go-backend-2:
     container_name: go-backend-2
     build: ./go-backend
-    command: go run /home/go-backend/main.go 8081
+    command: go run /home/go-backend/main.go 8080
     networks:
     - common-network
 
@@ -39,7 +39,7 @@ services:
   nodejs-backend-2:
     container_name: nodejs-backend-2
     build: ./nodejs-backend
-    command: node /home/nodejs-backend/app.js 9091
+    command: node /home/nodejs-backend/app.js 9090
     networks:
     - common-network
   
