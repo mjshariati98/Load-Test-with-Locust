@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
@@ -68,11 +69,12 @@ func fGet(c *gin.Context) {
 }
 
 func main() {
+	port := ":" + os.Args[1]
 
 	router := gin.Default()
 
 	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "",
 		DB:       0,
 	})
@@ -80,5 +82,5 @@ func main() {
 	router.POST("/go/sha256", fPost)
 	router.GET("/go/sha256", fGet)
 
-	router.Run()
+	router.Run(port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
