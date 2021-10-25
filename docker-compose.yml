@@ -1,0 +1,54 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.17.10
+    ports:
+    - "80:80"
+    volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+    - common-network    
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    command: npm run start
+    networks:
+    - common-network
+
+  go-backend-1:
+    container_name: go-backend-1
+    build: ./go-backend
+    command: go run /home/go-backend/main.go 8080
+    networks:
+    - common-network
+  go-backend-2:
+    container_name: go-backend-2
+    build: ./go-backend
+    command: go run /home/go-backend/main.go 8081
+    networks:
+    - common-network
+
+  nodejs-backend-1:
+    container_name: nodejs-backend-1
+    build: ./nodejs-backend
+    command: node /home/nodejs-backend/app.js 9090
+    networks:
+    - common-network
+  nodejs-backend-2:
+    container_name: nodejs-backend-2
+    build: ./nodejs-backend
+    command: node /home/nodejs-backend/app.js 9091
+    networks:
+    - common-network
+  
+  redis:
+    container_name: redis
+    image: redis:6.2.6-alpine
+    networks:
+    - common-network
+
+
+networks:
+  common-network:

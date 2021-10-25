@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
-const port = 3000;
+const port = process.argv[2];
 
 // redis client
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient({
+    host: "redis",
+});
 
 client.on("error", function (error) {
     console.error(error);
