@@ -12,13 +12,23 @@ import (
 
 var client *redis.Client
 
-type inputVar struct {
+type InputVar struct {
 	InputString string `json:"inputString"`
 }
 
-func fPost(c *gin.Context) {
+func isRedisDown() bool {
+	pong, err := client.Ping().Result()
+	fmt.Println(err, pong)
+	return err != nil
+}
 
-	var newInput inputVar
+func fPost(c *gin.Context) {
+	if isRedisDown() {
+		c.IndentedJSON(http.StatusInternalServerError, "Redis is Down.")
+		return
+	}
+
+	var newInput InputVar
 	if err := c.BindJSON(&newInput); err != nil {
 		return
 	}
@@ -26,7 +36,7 @@ func fPost(c *gin.Context) {
 	stInput := newInput.InputString
 	h := sha256.New()
 	if len(stInput) < 8 {
-		c.IndentedJSON(http.StatusCreated, -1)
+		c.IndentedJSON(http.StatusBadRequest, "String length must be greater than 7.")
 		return
 	}
 
@@ -35,34 +45,40 @@ func fPost(c *gin.Context) {
 
 	err := client.Set(sha1_hash, stInput, 0).Err()
 	if err != nil {
-		fmt.Println(err)
+		c.IndentedJSON(http.StatusInternalServerError, err)
+		return
 	}
 	c.IndentedJSON(http.StatusCreated, sha1_hash)
 }
 
 func fGet(c *gin.Context) {
-	shaInput := c.Param("shaInput")
-	val, err := client.Get(shaInput).Result()
-	if err != nil {
-		c.IndentedJSON(http.StatusCreated, "not exist")
+	if isRedisDown() {
+		c.IndentedJSON(http.StatusInternalServerError, "Redis is Down.")
 		return
 	}
-	c.IndentedJSON(http.StatusCreated, val)
+
+	shaInput := c.Query("shaInput")
+
+	val, err := client.Get(shaInput).Result()
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, "Not exists.")
+		return
+	}
+	c.IndentedJSON(http.StatusOK, val)
 }
 
 func main() {
 
-	r := gin.Default()
+	router := gin.Default()
+
 	client = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
-	pong, err := client.Ping().Result()
-	fmt.Println(err, pong)
 
-	r.POST("/go/sha256", fPost)
-	r.GET("/go/sha256/:shaInput", fGet)
+	router.POST("/go/sha256", fPost)
+	router.GET("/go/sha256", fGet)
 
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	router.Run()
 }
