@@ -1,16 +1,18 @@
-## Run
-In the root directory, just run the below command
-```
-docker-compose up
-```
-And the project will be available at localhost:80.
+# Load Test with Locust
+This project consists of the following components:
+- A simple frontend
+- A minimal web backed by GoLang
+- A minimal web backend by Node.js
+- A Nginx as a load balancer
+
+We will perform four load-testing scenarios by [Locust](https://locust.io/). Its results are provided below.
 
 ## Load Tests
-Load testing is done by [Locust](https://locust.io/). Four scenarios are tested:
+Four scenarios are tested:
 1. One Go backend and One NodeJS backend
-2. Two Go backend and Two NodeJS backend
-3. Three Go backend and Two NodeJS backend
-4. Two Go backend and Three NodeJS backend
+2. Two Go backends and Two NodeJS backend
+3. Three Go backends and Two NodeJS backend
+4. Two Go backends and Three NodeJS backend
 
 In all tests, there are 1000 users (50 user/second Spawn rate), and each test is run for 2 minutes.
 
@@ -54,3 +56,10 @@ In all tests, there are 1000 users (50 user/second Spawn rate), and each test is
 ![statistics](https://github.com/web-14001/hw1/blob/master/load-test-results/statistics-two-three.png)
 #### Charts
 ![charts](https://github.com/web-14001/hw1/blob/master/load-test-results/charts-two-three.png)
+
+## Run
+In the root directory, just run the below command
+```
+docker-compose up
+```
+And the project will be available at localhost:80.
